@@ -1,0 +1,7 @@
+{
+  "source": "/home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/last.ckpt",
+  "checkpoint_sha256": "cba41cc1f3ba4331cdf03591b2e7a469fa3918da8defcf25312142c698136a9a",
+  "epoch": 16600,
+  "step_count": 2175795200,
+  "source_mtime_ns": 1793723043796193663
+}

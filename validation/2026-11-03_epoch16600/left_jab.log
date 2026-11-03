@@ -1,0 +1,10 @@
+[ovpp] Loading config: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/onnx_exports/2026-11-03_last_epoch16600/models/unified_pipeline.yaml
+[ovpp] 24 bodies, 69 dofs, control_dt=0.0333333 physics_dt=0.00833333 substeps=4 future=1 [hierarchical mini-brain] num_characters=1
+[ovpp] Loading MJCF: /home/jwylie/Dev/OVMiniBrain/assets/smpl_humanoid.xml
+[ovpp] Loading motion cache: /home/jwylie/Dev/OVMiniBrain/motion_cache/left_jab.pmc
+[ovpp] Building PhysX world + 1 character(s) (self_collision=on)
+[ovpp] Loading ONNX policy: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/onnx_exports/2026-11-03_last_epoch16600/models/unified_pipeline.onnx
+[ovpp] Starting policy loop (motion length=1.9s, 57 ticks).
+[ovpp] tracking err (char0, mean per-body L2, last 30): 0.0497682 m  [t=1/1.9]
+[ovpp] Motion finished at step 57.
+[ovpp] Done.

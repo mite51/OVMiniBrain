@@ -1,0 +1,19 @@
+...................                                                      [100%]
+=============================== warnings summary ===============================
+../../anaconda3/envs/protomotion_isaaclab_12/lib/python3.12/site-packages/torch/jit/_script.py:1488: 52 warnings
+  /home/jwylie/anaconda3/envs/protomotion_isaaclab_12/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+<unknown>:4
+  <unknown>:4: SyntaxWarning: invalid escape sequence '\*'
+
+../../anaconda3/envs/protomotion_isaaclab_12/lib/python3.12/site-packages/glfw/__init__.py:917
+  /home/jwylie/anaconda3/envs/protomotion_isaaclab_12/lib/python3.12/site-packages/glfw/__init__.py:917: GLFWError: (65550) b'X11: Failed to open display :1'
+    warnings.warn(message, GLFWError)
+
+tests/test_minibrain_module.py::test_predict_next_joint_state_differentiable_path
+  /home/jwylie/anaconda3/envs/protomotion_isaaclab_12/lib/python3.12/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+    raw_cnt = _raw_device_count_nvml()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+19 passed, 55 warnings in 7.04s

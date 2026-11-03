@@ -1,0 +1,25 @@
+{
+  "cases": 9,
+  "max_absolute_error": {
+    "actions": 3.5762786865234375e-07,
+    "joint_pos_targets": 5.960464477539062e-07,
+    "stiffness_targets": 0.0,
+    "damping_targets": 0.0
+  },
+  "standalone_minibrain": {
+    "cases": 3,
+    "locked_axes_verified": true,
+    "max_absolute_error": 2.9802322387695312e-08,
+    "onnx_sha256": "5738d13a8d7d1d372fcf13c4ca0a987a2426247bd5b3f4d6a1641f1edfdf59e7"
+  },
+  "checkpoint": "/home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/last.ckpt",
+  "epoch": 16600,
+  "step_count": 2175795200,
+  "minibrain_weights": "embedded_in_actor_checkpoint",
+  "main_residual_radians": 1.8,
+  "local_residual_radians": 0.75,
+  "checkpoint_sha256": "cba41cc1f3ba4331cdf03591b2e7a469fa3918da8defcf25312142c698136a9a",
+  "onnx_sha256": "029df6eed719c4b04e05c200ba4e066a7723ba03aec9b2c5cce7bd1eaf3e6758",
+  "main_parameters": 6605893,
+  "minibrain_parameters": 27926
+}

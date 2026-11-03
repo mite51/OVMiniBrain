@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "model": "/home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/onnx_exports/2026-11-03_last_epoch16600/models/unified_pipeline.onnx",
+  "motion_cache": "/home/jwylie/Dev/OVMiniBrain/motion_cache/idle.pmc",
+  "complete": true,
+  "passed": true,
+  "score": 96.5105262,
+  "score_definition": "100 / (1 + mean_position_error_m / failure_threshold_m); quality index, not probability",
+  "assessment": "Trackable by this model in standalone PhysX",
+  "failure_threshold_m": 0.5,
+  "frames_evaluated": 43,
+  "duration_s": 1.43333328,
+  "evaluated_s": 1.43333341,
+  "first_failure_s": null,
+  "mean_position_error_m": 0.0180782032,
+  "p95_body_position_error_m": 0.0445474421,
+  "max_mean_position_error_m": 0.0414557514,
+  "mean_rotation_error_rad": 0.0770145612,
+  "reference_kinematics": {"peak_body_speed_m_s": 0.687265271, "peak_root_speed_m_s": 0.308824105, "peak_body_angular_speed_rad_s": 2.45322831, "peak_joint_speed_rad_s": 2.87546206, "peak_body_acceleration_m_s2": 5.55725357},
+  "limbs": {
+    "left_arm": {"mean_position_error_m": 0.0127209443, "p95_position_error_m": 0.0188534868},
+    "right_arm": {"mean_position_error_m": 0.0115968413, "p95_position_error_m": 0.0152382943},
+    "left_leg": {"mean_position_error_m": 0.0366005507, "p95_position_error_m": 0.0433930494},
+    "right_leg": {"mean_position_error_m": 0.0227176163, "p95_position_error_m": 0.0272505674},
+    "trunk": {"mean_position_error_m": 0.0125025468, "p95_position_error_m": 0.0181331434}
+  }
+}

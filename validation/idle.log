@@ -1,0 +1,12 @@
+[ovpp] Loading config: /tmp/OVMiniBrain/models/smpl/unified_pipeline.yaml
+[ovpp] 24 bodies, 69 dofs, control_dt=0.0333333 physics_dt=0.00833333 substeps=4 future=1 [hierarchical mini-brain] num_characters=1
+[ovpp] Loading MJCF: /tmp/OVMiniBrain/assets/smpl_humanoid.xml
+[ovpp] Loading motion cache: /tmp/OVMiniBrain/motion_cache/idle.pmc
+[ovpp] Building PhysX world + 1 character(s) (self_collision=on)
+[ovpp] Loading ONNX policy: /tmp/OVMiniBrain/models/smpl/unified_pipeline.onnx
+[ovpp] Parity dump -> /tmp/minibrain-idle.npz (max_steps=90)
+[ovpp] Starting policy loop (motion length=1.43333s, 43 ticks).
+[ovpp] tracking err (char0, mean per-body L2, last 30): 0.0229386 m  [t=1/1.43333]
+[ovpp] Motion finished at step 43.
+[ovpp] Wrote parity dump (43 records).
+[ovpp] Done.
