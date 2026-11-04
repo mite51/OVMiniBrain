@@ -1,7 +1,7 @@
 {
   "cases": 9,
   "max_absolute_error": {
-    "actions": 2.384185791015625e-07,
+    "actions": 3.5762786865234375e-07,
     "joint_pos_targets": 4.76837158203125e-07,
     "stiffness_targets": 0.0,
     "damping_targets": 0.0
@@ -13,13 +13,13 @@
     "onnx_sha256": "2bf8d4fcd49c89863ddd99d42accb0b12fbc36ef49fe6b2a24ede68527b91b19"
   },
   "checkpoint": "/home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/last.ckpt",
-  "epoch": 7600,
-  "step_count": 996147200,
+  "epoch": 19930,
+  "step_count": 2612264960,
   "minibrain_weights": "embedded_in_actor_checkpoint",
   "main_residual_radians": 1.8,
   "local_residual_radians": 0.75,
-  "checkpoint_sha256": "c7bd9fc03480f0934998b0acc30c6bed21716dd7bdb0d8d26c308b833d92d3e0",
-  "onnx_sha256": "333f265946c20ccacb408c4a4f3dba4c25664dfe836460c97ce77d539ae34673",
+  "checkpoint_sha256": "91877e877081f7cd3ab57070c96065b5927f24441d10f7fe4463c9524cb5623c",
+  "onnx_sha256": "99908fca2221dcc1dbe79e3617d73ec32b3e2edf868c167a61f0bbca3201b97b",
   "main_parameters": 8375365,
   "minibrain_parameters": 31001
 }
