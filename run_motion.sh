@@ -3,11 +3,15 @@ set -euo pipefail
 repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 motion=idle
 if (( $# > 0 )) && [[ "$1" != --* ]]; then motion="$1"; shift; fi
-case "$motion" in
-  idle|left_jab) cache="$repo_dir/motion_cache/$motion.pmc" ;;
-  *.pmc) cache="$(realpath -- "$motion")" ;;
-  *) echo "Usage: $0 [idle|left_jab|clip.pmc] [--headless] [--model-dir DIR] [viewer options]" >&2; exit 2 ;;
-esac
+if [[ -f "$repo_dir/motion_cache/$motion.pmc" ]]; then
+  cache="$repo_dir/motion_cache/$motion.pmc"
+elif [[ "$motion" == *.pmc && -f "$motion" ]]; then
+  cache="$(realpath -- "$motion")"
+else
+  available="$(ls -1 "$repo_dir/motion_cache"/*.pmc 2>/dev/null | xargs -n1 basename -s .pmc | paste -sd'|' -)"
+  echo "Usage: $0 [$available|clip.pmc] [--headless] [--model-dir DIR] [viewer options]" >&2
+  exit 2
+fi
 model_dir="${OVMINIBRAIN_MODEL_DIR:-$repo_dir/models/smpl}"
 render=(--render)
 options=()
