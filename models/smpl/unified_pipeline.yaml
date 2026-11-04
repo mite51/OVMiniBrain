@@ -16,18 +16,24 @@ timing:
     decimation: 4
     future_step_indices:
     - 1
+    - 2
+    - 4
+    - 8
     future_dt_seconds:
     - 0.03333333333333333
+    - 0.06666666666666667
+    - 0.13333333333333333
+    - 0.26666666666666666
     provenance:
-      config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/resolved_configs.pt
-      config_sha256: 7dd6235d20a052482a00bae055bf4c9b2a5a827434b2e643d47cc4545bc7d82b
+      config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/resolved_configs.pt
+      config_sha256: ba23c679d491662e0b79a1df1bd6cb269762490b975c21381f9ac127856df6da
       fields:
       - simulator.sim.fps
       - simulator.sim.decimation
   target_simulator: null
   export_config:
-    config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/resolved_configs_inference.pt
-    config_sha256: 91a4743347ff7967aa4a7d6b7ed0b6d13d8f277eaa94596f777becaa3d515ded
+    config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/resolved_configs_inference.pt
+    config_sha256: 79edc70345c2fe31f9cd2634dff4bd780d4fe4a18469617dd42acdac0244adf2
     fields:
     - env.control_components.mimic.future_steps
 body_names: &id001
@@ -186,40 +192,40 @@ policy_inputs:
   key: mimic.future_ang_vel
   shape:
   - 1
-  - 1
+  - 4
   - 24
   - 3
 - name: mimic_future_dof_pos
   key: mimic.future_dof_pos
   shape:
   - 1
-  - 1
+  - 4
   - 69
 - name: mimic_future_dof_vel
   key: mimic.future_dof_vel
   shape:
   - 1
-  - 1
+  - 4
   - 69
 - name: mimic_future_pos
   key: mimic.future_pos
   shape:
   - 1
-  - 1
+  - 4
   - 24
   - 3
 - name: mimic_future_rot
   key: mimic.future_rot
   shape:
   - 1
-  - 1
+  - 4
   - 24
   - 4
 - name: mimic_future_vel
   key: mimic.future_vel
   shape:
   - 1
-  - 1
+  - 4
   - 24
   - 3
 policy_outputs:
@@ -600,14 +606,17 @@ control:
 motion:
   future_step_indices:
   - 1
+  - 2
+  - 4
+  - 8
 robot:
   mjcf_path: mjcf/smpl_humanoid.xml
   body_names: *id001
   joint_names: *id002
 metadata:
-  checkpoint: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v3_all_melee/last.ckpt
-  epoch: 16600
-  step_count: 2175795200
+  checkpoint: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/last.ckpt
+  epoch: 7600
+  step_count: 996147200
   minibrain_weights: embedded_in_actor_checkpoint
   main_residual_radians: 1.8
   local_residual_radians: 0.75

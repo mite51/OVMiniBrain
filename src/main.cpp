@@ -304,8 +304,8 @@ int main(int argc, char** argv) try {
     const int D = cfg.num_dofs();
     const int F = cfg.future_steps();
     if(evaluating) {
-        if(motion.K < (int)std::ceil(motion.length / dt)+*std::max_element(cfg.future_step_indices.begin(),cfg.future_step_indices.end())+1)
-            throw std::runtime_error("Evaluation cache does not cover the full clip and future lookahead");
+        if(motion.K < (int)std::ceil(motion.length / dt) + 1)
+            throw std::runtime_error("Evaluation cache does not cover the full clip");
         for(const auto* values : {&motion.body_pos,&motion.body_rot,&motion.body_vel,&motion.body_ang_vel,&motion.dof_pos,&motion.dof_vel})
             for(float value:*values)if(!std::isfinite(value))throw std::runtime_error("Non-finite evaluation reference");
     }

@@ -70,7 +70,8 @@ def _max_future_index(yaml_path: Path | None) -> int:
     with open(yaml_path, "r", encoding="utf-8") as f:
         blob = yaml.safe_load(f) or {}
     motion = blob.get("motion") or {}
-    fsi = motion.get("future_step_indices") or [1]
+    timing = (blob.get("timing") or {}).get("training") or {}
+    fsi = motion.get("future_step_indices") or timing.get("future_step_indices") or [1]
     return int(max(int(x) for x in fsi))
 
 
