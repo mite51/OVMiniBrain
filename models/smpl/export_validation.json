@@ -10,7 +10,7 @@
     "cases": 3,
     "locked_axes_verified": true,
     "max_absolute_error": 2.9802322387695312e-08,
-    "onnx_sha256": "66c9f169890271b8f03d9e7d6675b66af72450b410d395e00b2c3694499e5b19"
+    "onnx_sha256": "a5f12b84d9e11bd07f5a74bd32f0ca43d78e10f7452b3e167f220f243c241d01"
   },
   "checkpoint": "/home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/last.ckpt",
   "epoch": 19930,
@@ -19,7 +19,7 @@
   "main_residual_radians": 1.8,
   "local_residual_radians": 0.75,
   "checkpoint_sha256": "91877e877081f7cd3ab57070c96065b5927f24441d10f7fe4463c9524cb5623c",
-  "onnx_sha256": "3acc068e9dd4233e4d8f8c7c212236ce219d15f70276892f197b766f4cbfc132",
+  "onnx_sha256": "aa32ef41c24152ea552c49304656fe96a13021ccaa23732b6616d5f9bf9f157a",
   "main_parameters": 8375365,
   "minibrain_parameters": 31001
 }
