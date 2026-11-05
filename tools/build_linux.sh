@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-cmake -S "$repo_dir" -B "$repo_dir/build" -DCMAKE_BUILD_TYPE=Release \
+cmake -S "$repo_dir" -B "$repo_dir/build" -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DPHYSX_ROOT="$repo_dir/deps/PhysX/physx" \
   -DPHYSX_LINUX_LIB_DIR="$repo_dir/deps/physx-sdk/bin/linux.x86_64/release" \
   -DORT_ROOT="$repo_dir/deps/onnxruntime" \

@@ -50,7 +50,7 @@ struct Args {
     std::string onnx;
     std::string yaml;
     std::string motion_cache;
-    std::string mjcf = "C:/Git/ProtoMotions/protomotions/data/assets/mjcf/smpl_humanoid.xml";
+    std::string mjcf = "assets/smpl_humanoid.xml";
     long max_steps = 0;       // 0 = run to motion end
     bool self_collision = true;
     int tracking_log_every = 30;

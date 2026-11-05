@@ -31,7 +31,10 @@ done
 echo "[OVMiniBrain] Model: $model_dir/unified_pipeline.onnx"
 # PhysX may create a local session file; keep it within this project.
 cd "$repo_dir"
-exec "$repo_dir/build/ovminibrain" \
+exe="$repo_dir/bin/ovminibrain"
+if [[ ! -x "$exe" ]]; then exe="$repo_dir/build/ovminibrain"; fi
+if [[ ! -x "$exe" ]]; then echo "Viewer not built. Run tools/build_linux.sh first." >&2; exit 2; fi
+exec "$exe" \
   --onnx "$model_dir/unified_pipeline.onnx" \
   --yaml "$model_dir/unified_pipeline.yaml" \
   --motion-cache "$cache" --mjcf "$repo_dir/assets/smpl_humanoid.xml" \

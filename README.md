@@ -1,22 +1,52 @@
 # OVMiniBrain
 
-Native C++ / PhysX / ONNX Runtime viewer for the hierarchical SMPL controller.
-Based on `/home/jwylie/Dev/OVProtomotionsCpp`, with its own source, executable,
-models, motion caches, robot asset, and copied build dependencies. The original
-viewer is unchanged. Python and Isaac Sim are not needed to run the viewer.
+[![Build and package](https://github.com/mite51/OVMiniBrain/actions/workflows/build.yml/badge.svg)](https://github.com/mite51/OVMiniBrain/actions/workflows/build.yml)
 
-## Run
+[GitHub repository](https://github.com/mite51/OVMiniBrain) ·
+[Windows and Linux builds](https://github.com/mite51/OVMiniBrain/actions/workflows/build.yml)
+
+Native C++ / PhysX / ONNX Runtime viewer for the hierarchical SMPL controller.
+Python and Isaac Sim are not needed to run a packaged viewer. Physics and ONNX
+inference run on the CPU; the viewer needs an OpenGL 3.3 capable graphics driver.
+
+## Run a shared package
+
+Extract the **entire ZIP** before launching. Use the package matching your OS:
+`OVMiniBrain-linux-x64.zip` or `OVMiniBrain-windows-x64.zip`. A Linux executable
+and its `.so` libraries cannot run natively on Windows; Windows needs an `.exe`
+and matching `.dll` libraries built on Windows.
+
+Linux (x86-64):
 
 ```bash
-cd /home/jwylie/Dev/OVMiniBrain
-./run_motion.sh idle
-./run_motion.sh left_jab
-./run_motion.sh left_jab --headless
-./run_motion.sh left_jab --num-characters 4
-./run_motion.sh /absolute/path/to/another.pmc
-# Previous epoch-7000 model:
-./run_motion.sh left_jab --model-dir ./models_0/smpl
+cd /path/to/OVMiniBrain-linux-x64
+bash run_motion.sh idle
+bash run_motion.sh left_jab --headless --max-steps 60
+bash run_motion.sh left_jab --num-characters 4
 ```
+
+Windows (x64), from Command Prompt or PowerShell:
+
+```powershell
+.\run_motion.cmd idle
+.\run_motion.cmd left_jab --headless --max-steps 60
+.\run_motion.cmd left_jab --num-characters 4
+```
+
+Double-click `run_motion.cmd` to show the idle clip. Both launchers accept a
+`.pmc` file path in place of a clip name, `--model-dir DIR` for another model,
+and `OVMINIBRAIN_MODEL_DIR` as a default model directory. Quote paths containing
+spaces. For now, extract Windows packages to a path using ASCII characters;
+the native asset readers have not been validated with Unicode Windows paths.
+The launchers locate the app and assets relative to themselves, so you can move
+the extracted folder. Headless mode does not need a display server.
+
+Linux binaries built here target Ubuntu 24.04 x86-64 and its system C/C++ runtime;
+rebuild from the source ZIP on older distributions. Rendering uses X11 (including
+XWayland on Wayland desktops). Windows builds bundle the release Visual C++ runtime
+when CMake finds it in Visual Studio; if a runtime DLL is missing, install the
+[x64 Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe),
+as required by [ONNX Runtime](https://onnxruntime.ai/docs/install/).
 
 The window title is **OVMiniBrain - Hierarchical SMPL**. Space pauses, Right Arrow
 advances one tick while paused, R resets the camera, and Escape closes the window.
@@ -25,6 +55,59 @@ initial state when looping. Default stamina is 1.0, matching this checkpoint's
 training setting. To test weaker joints, use `--stamina-range 0.2 1.0`.
 This checkpoint has no opponent/projectile observations; it is a motion tracker
 trained on a corpus that includes melee animations.
+
+## Build and share
+
+Use Python 3.9+ and CMake 3.24+. Python and Jinja2 are build/packaging tools only.
+The source ZIP includes dependency sources and Linux SDK libraries, and excludes
+machine-specific build caches, Git history, and validation output. It preserves
+the current model files on disk, including uncommitted model updates.
+
+Linux also needs a C++17 compiler and OpenGL/X11 development packages. On Ubuntu:
+
+```bash
+sudo apt install build-essential cmake python3 python3-jinja2 libgl1-mesa-dev libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+./tools/build_linux.sh
+python3 tools/package.py
+python3 tools/package.py --source
+```
+
+Windows needs Visual Studio 2022 (or Build Tools) with **Desktop development with
+C++**, the v143 x64 toolset, and a Windows SDK. Put CMake and Python on PATH:
+
+```powershell
+python -m pip install "Jinja2>=2.7,<4"
+.\tools\build_windows.cmd
+python tools/package.py --build-dir build-windows
+```
+
+The Windows helper builds the included PhysX 5.6.1 CPU sources, builds the app,
+and runs the four headless C++ checks. Its first configuration downloads the
+Windows x64 ONNX Runtime 1.26.0 SDK. For offline builds, supply an unpacked SDK:
+`tools\build_windows.cmd --ort-root "C:\SDKs\onnxruntime-win-x64-1.26.0"`.
+You can also place that SDK under `deps/onnxruntime-win-x64/` before creating the
+source ZIP. Dependency sources for GLFW, GLM, GLAD, pugixml and yaml-cpp are
+already included. Linux builds use the included SDKs without downloading.
+A GitHub Actions workflow is included to build, run headless checks, test an
+extracted package in a path with spaces, and upload runtime ZIPs on both OSes.
+It runs on pushes and pull requests, or can be started with **Run workflow** on
+the [build workflow page](https://github.com/mite51/OVMiniBrain/actions/workflows/build.yml).
+To download a build, open a successful run and select its Windows or Linux
+artifact. GitHub wraps the runtime ZIP inside an artifact ZIP; extract both layers
+before launching. Downloading Actions artifacts requires signing in to GitHub.
+Both helpers build Release. The bundled Linux PhysX libraries are Release-only.
+
+Packages are written under `dist/`. Send the runtime ZIP for someone who just
+wants to run the viewer. Send `OVMiniBrain-source.zip` for someone who will build
+it, including on Windows. A Windows runtime ZIP must be built and checked on
+Windows; adding a Windows launcher does not convert the Linux binary.
+
+The packaging helper installs only the app, current unified model, motion
+clips, robot asset, launcher, docs, and dependency notices. ONNX Runtime library
+aliases are copied as **ordinary files**, preserving the names required by the
+Linux loader. ZIP creation also dereferences file symlinks, rejects broken links
+and special files, checks archive integrity, and excludes build caches from the
+source archive. Use this helper instead of zipping the entire working folder.
 
 ## Which model
 
@@ -57,17 +140,11 @@ target error. Unavailable axes hold their current angle. Its PD output is in
 radians and does not include the whole-body policy or final joint-range clamp.
 Feature layout is documented in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-## Build and export
+## Export models and cache motions
 
 ```bash
-./tools/build_linux.sh
 ./tools/export_policy.sh
 ```
-
-The build uses the copied PhysX 5.6.1 libraries and cached dependency sources
-under `deps/`; it does not fetch dependencies. Requires a C++17 toolchain, CMake,
-Python for GL loader generation, and the system OpenGL/X11 development libraries.
-The executable is `build/ovminibrain`. Runtime ONNX libraries are in `lib/`.
 
 Re-exporting requires the ProtoMotions Python environment. The helper defaults to
 `/home/jwylie/anaconda3/envs/protomotion_isaaclab_12/bin/python`; override

@@ -2,3 +2,7 @@ build/
 __pycache__/
 .pytest_cache/
 :memory:.ses
+build-*/
+dist/
+deps/onnxruntime-win-x64/
+deps/physx-windows/

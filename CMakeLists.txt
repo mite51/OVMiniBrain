@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.24)
 
 # CMP0091: let CMAKE_MSVC_RUNTIME_LIBRARY pick the CRT. We must build /MT
 # because the PhysX prebuilt static libs (PhysXExtensions_static_64.lib,
@@ -12,9 +12,14 @@ include(CTest)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(NOT MSVC AND NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if((WIN32 AND NOT MSVC) OR (NOT WIN32 AND NOT CMAKE_SYSTEM_NAME STREQUAL "Linux"))
     message(FATAL_ERROR "Supported platforms: Windows/MSVC and Linux")
 endif()
+
+if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8 OR NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(AMD64|amd64|x86_64|X86_64)$")
+    message(FATAL_ERROR "The bundled dependencies support x86-64 only.")
+endif()
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build helper dependencies statically" FORCE)
 
 # PhysX's PVD instrumentation is compiled OUT of the release libraries
 # (PX_SUPPORT_PVD=0) and IN for the debug libraries (PX_SUPPORT_PVD=1).
@@ -28,9 +33,9 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 # ----------------------------------------------------------------------
 # PhysX 5.6.1 (locally built by the user)
 # ----------------------------------------------------------------------
-set(PHYSX_ROOT "C:/Git/PhysX/physx" CACHE PATH "Root of the PhysX 5.6.1 SDK")
+set(PHYSX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/deps/PhysX/physx" CACHE PATH "Root of the PhysX 5.6.1 SDK")
 set(PHYSX_INCLUDE_DIR "${PHYSX_ROOT}/include")
-set(PHYSX_BIN_DIR "${PHYSX_ROOT}/bin/win.x86_64.vc143.mt")
+set(PHYSX_BIN_DIR "${PHYSX_ROOT}/bin/win.x86_64.vc143.mt" CACHE PATH "Windows PhysX binaries built with VS 2022 /MT")
 set(PHYSX_LIB_DIR_RELEASE "${PHYSX_BIN_DIR}/release")
 set(PHYSX_LIB_DIR_DEBUG   "${PHYSX_BIN_DIR}/debug")
 
@@ -64,9 +69,22 @@ set(PHYSX_DLL_NAMES
 # if you already have an unpacked onnxruntime-win-x64 tree.
 # ----------------------------------------------------------------------
 set(ORT_VERSION "1.26.0" CACHE STRING "ONNX Runtime version")
-set(ORT_ROOT "" CACHE PATH "Optional: pre-unpacked onnxruntime-win-x64 root")
+set(_ort_default "")
+if(WIN32 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/deps/onnxruntime-win-x64/lib/onnxruntime.lib")
+    set(_ort_default "${CMAKE_CURRENT_SOURCE_DIR}/deps/onnxruntime-win-x64")
+elseif(NOT WIN32 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/deps/onnxruntime/lib/libonnxruntime.so")
+    set(_ort_default "${CMAKE_CURRENT_SOURCE_DIR}/deps/onnxruntime")
+endif()
+set(ORT_ROOT "${_ort_default}" CACHE PATH "Optional: unpacked ONNX Runtime SDK for the target platform")
 
 include(FetchContent)
+# Prefer the dependency sources supplied in the source zip. No Git needed.
+foreach(_dep glad glfw glm pugixml yaml-cpp)
+    string(TOUPPER "${_dep}" _dep_upper)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/deps/${_dep}" AND NOT DEFINED FETCHCONTENT_SOURCE_DIR_${_dep_upper})
+        set(FETCHCONTENT_SOURCE_DIR_${_dep_upper} "${CMAKE_CURRENT_SOURCE_DIR}/deps/${_dep}")
+    endif()
+endforeach()
 
 if(WIN32)
     set(ORT_ARCHIVE "onnxruntime-win-x64-${ORT_VERSION}.zip")
@@ -101,6 +119,10 @@ set(ORT_LIB "${ORT_ROOT}/lib/onnxruntime.lib")
 set(ORT_DLL "${ORT_ROOT}/lib/onnxruntime.dll")
 if(NOT WIN32)
     set(ORT_LIB "${ORT_ROOT}/lib/libonnxruntime.so")
+endif()
+
+if(NOT EXISTS "${ORT_LIB}" OR (WIN32 AND NOT EXISTS "${ORT_DLL}"))
+    message(FATAL_ERROR "ORT_ROOT must contain the ONNX Runtime SDK for this platform: ${ORT_ROOT}")
 endif()
 
 # ----------------------------------------------------------------------
@@ -188,14 +210,23 @@ target_include_directories(ovminibrain PRIVATE
 # CMake's debug/optimized keywords map to the Debug config vs the rest.
 if(WIN32)
     foreach(lib ${PHYSX_LIB_NAMES})
+        if(NOT EXISTS "${PHYSX_LIB_DIR_RELEASE}/${lib}")
+            message(FATAL_ERROR "Missing ${PHYSX_LIB_DIR_RELEASE}/${lib}. Run tools/build_windows.cmd first.")
+        endif()
         target_link_libraries(ovminibrain PRIVATE
             debug "${PHYSX_LIB_DIR_DEBUG}/${lib}"
             optimized "${PHYSX_LIB_DIR_RELEASE}/${lib}")
     endforeach()
 else()
     set(PHYSX_LINUX_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/deps/physx-sdk/bin/linux.x86_64/release" CACHE PATH "PhysX Linux static libraries")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(FATAL_ERROR "Bundled Linux PhysX libraries are Release-only. Use -DCMAKE_BUILD_TYPE=Release.")
+    endif()
     target_link_libraries(ovminibrain PRIVATE "-Wl,--start-group")
     foreach(lib PhysXExtensions PhysX PhysXPvdSDK PhysXCooking PhysXCommon PhysXFoundation)
+        if(NOT EXISTS "${PHYSX_LINUX_LIB_DIR}/lib${lib}_static.a")
+            message(FATAL_ERROR "Missing Linux PhysX library: ${PHYSX_LINUX_LIB_DIR}/lib${lib}_static.a")
+        endif()
         target_link_libraries(ovminibrain PRIVATE "${PHYSX_LINUX_LIB_DIR}/lib${lib}_static.a")
     endforeach()
     target_link_libraries(ovminibrain PRIVATE "-Wl,--end-group" Threads::Threads ${CMAKE_DL_LIBS} OpenGL::GL)
@@ -213,7 +244,7 @@ target_link_libraries(ovminibrain PRIVATE
 )
 
 if(UNIX)
-    set_target_properties(ovminibrain PROPERTIES BUILD_RPATH "$ORIGIN/../lib")
+    set_target_properties(ovminibrain PROPERTIES BUILD_RPATH "$ORIGIN/../lib" INSTALL_RPATH "$ORIGIN/../lib")
 endif()
 
 if(BUILD_TESTING)
@@ -261,3 +292,44 @@ add_custom_command(TARGET ovminibrain POST_BUILD
 )
 
 endif()
+
+# A relocatable runtime tree, containing regular files (never symlinks).
+install(TARGETS ovminibrain RUNTIME DESTINATION bin COMPONENT Runtime)
+install(DIRECTORY models/smpl DESTINATION models COMPONENT Runtime
+    FILES_MATCHING PATTERN "unified_pipeline.onnx" PATTERN "unified_pipeline.yaml")
+install(DIRECTORY motion_cache/ DESTINATION motion_cache COMPONENT Runtime FILES_MATCHING PATTERN "*.pmc")
+install(FILES assets/smpl_humanoid.xml DESTINATION assets COMPONENT Runtime)
+install(FILES README.md ARCHITECTURE.md DESTINATION . COMPONENT Runtime)
+if(WIN32)
+    install(FILES run_motion.cmd run_motion.ps1 DESTINATION . COMPONENT Runtime)
+    foreach(_dll IN LISTS PHYSX_DLL_NAMES)
+        install(FILES "${PHYSX_BIN_DIR}/$<IF:$<CONFIG:Debug>,debug,release>/${_dll}" DESTINATION bin COMPONENT Runtime)
+    endforeach()
+    file(GLOB _ort_runtime "${ORT_ROOT}/lib/*.dll")
+    set(_runtime_dest bin)
+    # Bundle the redistributable release CRT required by ONNX Runtime.
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION bin)
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT Runtime)
+    include(InstallRequiredSystemLibraries)
+else()
+    install(PROGRAMS run_motion.sh DESTINATION . COMPONENT Runtime)
+    file(GLOB _ort_runtime "${ORT_ROOT}/lib/libonnxruntime*.so*")
+    set(_runtime_dest lib)
+endif()
+foreach(_runtime IN LISTS _ort_runtime)
+    get_filename_component(_runtime_name "${_runtime}" NAME)
+    file(REAL_PATH "${_runtime}" _runtime_real)
+    install(FILES "${_runtime_real}" DESTINATION "${_runtime_dest}" RENAME "${_runtime_name}" COMPONENT Runtime)
+endforeach()
+foreach(_dep PhysX glad glfw glm pugixml yaml-cpp)
+    foreach(_notice LICENSE LICENSE.md COPYING COPYING.txt copying.txt)
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/deps/${_dep}/${_notice}")
+            install(FILES "deps/${_dep}/${_notice}" DESTINATION "licenses/${_dep}" COMPONENT Runtime)
+        endif()
+    endforeach()
+endforeach()
+foreach(_notice LICENSE ThirdPartyNotices.txt)
+    if(EXISTS "${ORT_ROOT}/${_notice}")
+        install(FILES "${ORT_ROOT}/${_notice}" DESTINATION licenses/onnxruntime COMPONENT Runtime)
+    endif()
+endforeach()
