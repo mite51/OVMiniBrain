@@ -1,8 +1,8 @@
 {
   "cases": 9,
   "max_absolute_error": {
-    "actions": 3.5762786865234375e-07,
-    "joint_pos_targets": 4.76837158203125e-07,
+    "actions": 2.5331974029541016e-07,
+    "joint_pos_targets": 8.046627044677734e-07,
     "stiffness_targets": 0.0,
     "damping_targets": 0.0
   },
@@ -13,13 +13,13 @@
     "onnx_sha256": "2bf8d4fcd49c89863ddd99d42accb0b12fbc36ef49fe6b2a24ede68527b91b19"
   },
   "checkpoint": "/home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/last.ckpt",
-  "epoch": 19930,
-  "step_count": 2612264960,
+  "epoch": 34040,
+  "step_count": 4461690880,
   "minibrain_weights": "embedded_in_actor_checkpoint",
   "main_residual_radians": 1.8,
   "local_residual_radians": 0.75,
-  "checkpoint_sha256": "91877e877081f7cd3ab57070c96065b5927f24441d10f7fe4463c9524cb5623c",
-  "onnx_sha256": "99908fca2221dcc1dbe79e3617d73ec32b3e2edf868c167a61f0bbca3201b97b",
+  "checkpoint_sha256": "2ad85a424c3157797c50b0cf3999a75cee2fa8b827999ac837f56da05741af49",
+  "onnx_sha256": "c140bc162f2230667789ce8bc171017369bd2f5935ba36f9bf7d27be4ecaa736",
   "main_parameters": 8375365,
   "minibrain_parameters": 31001
 }

@@ -615,8 +615,8 @@ robot:
   joint_names: *id002
 metadata:
   checkpoint: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/last.ckpt
-  epoch: 19930
-  step_count: 2612264960
+  epoch: 34040
+  step_count: 4461690880
   minibrain_weights: embedded_in_actor_checkpoint
   main_residual_radians: 1.8
   local_residual_radians: 0.75
