@@ -64,8 +64,13 @@ struct PhysxWorld::Impl : public PxSimulationEventCallback {
     // ---- PxSimulationEventCallback ----
     void onContact(const PxContactPairHeader& header, const PxContactPair*,
                    PxU32) override {
-        setTouched(header.actors[0]);
-        setTouched(header.actors[1]);
+        const PxActor* a0 = header.actors[0];
+        const PxActor* a1 = header.actors[1];
+        const LinkTag* t0 = (a0 && a0->userData) ? static_cast<const LinkTag*>(a0->userData) : nullptr;
+        const LinkTag* t1 = (a1 && a1->userData) ? static_cast<const LinkTag*>(a1->userData) : nullptr;
+        if (t0 && t1 && t0->character == t1->character) return;  // Ignore self-collisions
+        setTouched(a0);
+        setTouched(a1);
     }
     void onConstraintBreak(PxConstraintInfo*, PxU32) override {}
     void onWake(PxActor**, PxU32) override {}
