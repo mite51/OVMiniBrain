@@ -25,15 +25,15 @@ timing:
     - 0.13333333333333333
     - 0.26666666666666666
     provenance:
-      config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/resolved_configs.pt
-      config_sha256: ba23c679d491662e0b79a1df1bd6cb269762490b975c21381f9ac127856df6da
+      config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_filtered_contacts/resolved_configs.pt
+      config_sha256: 7bd055791f797cfec60f7f120402a76039a7ce6dd853b5b0683ba06bc5a4b6ce
       fields:
       - simulator.sim.fps
       - simulator.sim.decimation
   target_simulator: null
   export_config:
-    config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/resolved_configs_inference.pt
-    config_sha256: 79edc70345c2fe31f9cd2634dff4bd780d4fe4a18469617dd42acdac0244adf2
+    config_path: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_filtered_contacts/resolved_configs_inference.pt
+    config_sha256: 2b91bd1c3fd8d5036231cda407173324e2cfb47eea4480cfb5ff79100e879584
     fields:
     - env.control_components.mimic.future_steps
 body_names: &id001
@@ -614,9 +614,9 @@ robot:
   body_names: *id001
   joint_names: *id002
 metadata:
-  checkpoint: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_all_melee/last.ckpt
-  epoch: 34040
-  step_count: 4461690880
+  checkpoint: /home/jwylie/Dev/ProtoMotions/results/smpl_hierarchical_v4_filtered_contacts/last.ckpt
+  epoch: 17110
+  step_count: 2242641920
   minibrain_weights: embedded_in_actor_checkpoint
   main_residual_radians: 1.8
   local_residual_radians: 0.75
